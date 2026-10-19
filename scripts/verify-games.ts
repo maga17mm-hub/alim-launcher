@@ -24,5 +24,6 @@ for(const loader of (process.argv.slice(2).length?process.argv.slice(2):['Vanill
  await fs.writeFile('work/game-results.json',JSON.stringify(result,null,2));
 }
 console.log(JSON.stringify(result,null,2));
+if(result.some(x=>x.status==='failed'))process.exitCode=1;
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});
