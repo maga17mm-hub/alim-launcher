@@ -1,0 +1,11 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import { offlineUuid, safeName, inside, httpsUrl } from '../electron/security';
+import { Store } from '../electron/store';
+test('offline identity matches Java UUID v3 and stays stable',()=>{assert.equal(offlineUuid('Notch'),'b50ad385829d3141a2167e7d7539ba7f');assert.notEqual(offlineUuid('Alim'),offlineUuid('alim'));});
+test('file names reject path traversal and Windows reserved names',()=>{for(const name of ['../evil.jar','..\\evil.jar','C:\\game.jar','NUL.jar','a.jar.','mods:payload.jar'])assert.throws(()=>safeName(name));assert.equal(safeName('sodium-0.6.jar'),'sodium-0.6.jar');});
+test('managed paths cannot escape their parent',()=>{const root=path.resolve('work','safe');assert.throws(()=>inside(root,'..','bad'));assert.equal(inside(root,'mods'),path.join(root,'mods'));assert.throws(()=>httpsUrl('http://example.com/a'));assert.throws(()=>httpsUrl('https://user:password@example.com/a'));});
+test('profiles and settings persist; invalid settings do not change state',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'alim-store-'));try{const a=new Store(dir);await a.load();await a.add({name:'Test',minecraft:'1.20.1',loader:'Fabric',loaderVersion:'0.16.14'});const original=a.state.settings.ram;await assert.rejects(()=>a.settings({...a.state.settings,ram:-1}));assert.equal(a.state.settings.ram,original);const b=new Store(dir);await b.load();assert.equal(b.state.profiles[0].name,'Test');assert.equal(b.state.selected,a.state.selected);}finally{await fs.rm(dir,{recursive:true,force:true});}});

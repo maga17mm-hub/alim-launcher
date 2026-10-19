@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "module": "Node16", "moduleResolution": "Node16", "rootDir": "electron", "outDir": "out", "noEmit": false },
+  "include": ["electron"]
+}

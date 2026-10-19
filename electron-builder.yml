@@ -1,0 +1,32 @@
+appId: ru.alim.launcher
+productName: Alim Launcher
+copyright: Copyright © 2026 Alim
+directories:
+  output: dist
+  buildResources: build
+files:
+  - out/**/*
+  - build/icon.ico
+  - package.json
+asar: true
+asarUnpack:
+  - node_modules/@xmcl/**/*
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: build/icon.ico
+  artifactName: Alim-Launcher-Setup-${version}.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Alim Launcher
+  deleteAppDataOnUninstall: false
+publish:
+  provider: github
+  owner: maga17mm-hub
+  repo: alim-launcher
+  releaseType: release
