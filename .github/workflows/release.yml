@@ -25,15 +25,20 @@ jobs:
           $version = (Get-Content package.json | ConvertFrom-Json).version
           if ($env:GITHUB_REF_NAME -ne "v$version") { throw 'Tag and package version must match' }
       - run: npm run build
-      - name: Package and publish installer and update metadata
-        run: npx electron-builder --win nsis --x64 --publish always
+      - name: Package installer and update metadata
+        run: npx electron-builder --win nsis --x64 --publish never
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_LINK: ${{ secrets.WINDOWS_CERTIFICATE }}
           CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+      - name: Publish and verify complete release
+        shell: pwsh
+        run: ./scripts/publish-release.ps1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: Alim-Launcher-Windows
+          if-no-files-found: error
           path: |
             dist/*.exe
             dist/*.blockmap
