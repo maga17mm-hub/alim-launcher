@@ -10,7 +10,7 @@
 4. `npm version patch` (обновляет package.json/lock и создаёт тег).
 5. `git push origin main --follow-tags`.
 
-Workflow `.github/workflows/release.yml` собирает Windows x64 и публикует EXE, `.blockmap`, `latest.yml` через `GITHUB_TOKEN` с `contents: write`. Версия тега обязана совпадать с package.json. PAT в исходниках и EXE отсутствует.
+Workflow `.github/workflows/release.yml` собирает Windows x64 и публикует EXE, `.blockmap`, `latest.yml` через `GITHUB_TOKEN` с `contents: write`. Версия тега обязана совпадать с package.json. PAT в исходниках и EXE отсутствует. Сборка выполняется с `--publish never`, затем `scripts/publish-release.ps1` загружает EXE/blockmap и только после этого latest.yml. `scripts/verify-release.cjs` проверяет наличие всех публичных файлов и скачивает EXE, чтобы сверить SHA-512 с latest.yml. Неполный релиз завершает job ошибкой.
 
 Если GitHub CLI сообщает о недостаточном scope для отправки workflow, выполните `gh auth refresh -h github.com -s workflow` в своей интерактивной консоли и завершите авторизацию в браузере; затем повторите `git push`. Не вставляйте токены в чат.
 

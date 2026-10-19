@@ -11,6 +11,8 @@ if ($LASTEXITCODE -ne 0) {
     gh release create $tag --verify-tag --title "Alim Launcher $version" --notes-file CHANGELOG.md
     if ($LASTEXITCODE -ne 0) { throw 'Could not create GitHub release' }
 }
+gh release edit $tag --title "Alim Launcher $version" --notes-file CHANGELOG.md
+if ($LASTEXITCODE -ne 0) { throw 'Could not update release notes' }
 # Upload matching binary + blockmap first. Only then expose latest.yml.
 gh release upload $tag $installer $blockmap --clobber
 if ($LASTEXITCODE -ne 0) { throw 'Failed to upload installer/blockmap' }
