@@ -1,6 +1,6 @@
 {
   "name": "alim-launcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Alim Launcher — Minecraft Java Edition",
   "main": "out/main.js",
   "scripts": {
